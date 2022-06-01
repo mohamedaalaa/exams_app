@@ -119,7 +119,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                                     FocusScope.of(context).unfocus();
                                     if (authController.isEmailFPValid.value) {
                                       authController.resetPassword(
-                                          emailController.text, context);
+                                          emailController.text.trim(), context);
                                     } else {
                                       displayMessage(
                                           "emal is required", context);
