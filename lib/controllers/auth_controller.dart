@@ -72,7 +72,7 @@ class AuthController extends GetxController {
     try {
       isLoading(true);
 
-      await auth.sendPasswordResetEmail(email: "mhamedalaa462@gmail.com");
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: "mhamedalaa462@gmail.com");
     } on FirebaseException catch (e) {
       displayMessage(e.toString(), context);
     } finally {
