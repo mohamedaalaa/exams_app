@@ -44,12 +44,5 @@ class DataBaseHelper {
     });
 
     return data;
-    /*.collection("Ques And Ans")
-      .doc("pYDT7fkcPsZwgrzpnPVa")
-      .get()
-      .then((value) => print("data= ${value.data()!.length}"));*/
   }
 }
-
-
- // print(doc.docs[0].data()["option 1"]);
