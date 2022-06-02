@@ -5,8 +5,7 @@ import 'package:exams/utils/sizes.dart';
 import 'package:exams/utils/comon_widgets.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:flutter/src/foundation/key.dart';
-import 'package:flutter/src/widgets/framework.dart';
+
 import 'package:random_string/random_string.dart';
 
 class CreateQuiz extends StatefulWidget {
@@ -87,10 +86,12 @@ class _CreateQuizState extends State<CreateQuiz> {
       displayMessage(
           "quiz ccreated successfully please enter exam questions", context);
       clearTextFields();
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => AddQuestion(
-                quizId: quizId,
-              )));
+      Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(
+              builder: (context) => AddQuestion(
+                    quizId: quizId,
+                  )),
+          (route) => false);
     });
   }
 

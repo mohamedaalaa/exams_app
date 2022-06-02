@@ -1,11 +1,9 @@
 import 'package:exams/controllers/auth_controller.dart';
 import 'package:exams/main.dart';
-import 'package:exams/screens/home_page.dart';
-
+import 'package:exams/screens/students_quizes.dart';
 import 'package:exams/utils/colors.dart';
 import 'package:exams/utils/comon_widgets.dart';
 import 'package:exams/utils/sizes.dart';
-
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -105,13 +103,14 @@ class WelcomePage extends StatelessWidget {
                                         btnWidth: deviceSize.width * .3,
                                         label: "Login",
                                         onTap: () {
-                                          Navigator.of(context).pushReplacement(
+                                          Navigator.of(context).pushAndRemoveUntil(
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       authController
                                                               .isTeacher.value
                                                           ? const HomePage()
-                                                          : const HomeDashBoard()));
+                                                          : const StudentsQuiz()),
+                                              (route) => false);
                                         })
                                   ],
                                 )

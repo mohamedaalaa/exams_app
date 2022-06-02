@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:nb_utils/nb_utils.dart';
 
+import '../services/database_helper.dart';
+
 int total = 0;
 int correct = 0;
 int wrong = 0;
@@ -47,12 +49,9 @@ class _TakeQuizState extends State<TakeQuiz> {
   }
 
   @override
-  void initState() {
-    quizController.getQuizData(widget.quizId, context).then((value) {
-      querySnapshot = value;
-      total = value!.docs.length;
-    });
-    super.initState();
+  void dispose() {
+    correct = 0;
+    super.dispose();
   }
 
   @override
@@ -61,21 +60,38 @@ class _TakeQuizState extends State<TakeQuiz> {
       appBar: AppBar(
         title: const Text("take quiz"),
       ),
-      body: Obx(
-        () => quizController.isLoading.value
-            ? loadingRow()
-            : querySnapshot!.docs.isEmpty
-                ? const Center(
-                    child: Text("exam has no questions"),
-                  )
-                : ListView.builder(
-                    itemCount: querySnapshot!.docs.length,
-                    itemBuilder: (context, i) {
-                      return QuizPlayTile(
+      body: FutureBuilder(
+        future: DataBaseHelper()
+            .getQuizQuestions(widget.quizId, context)
+            .then((value) {
+          querySnapshot = value;
+          total = value!.docs.length;
+        }),
+        builder: (context, snapshot) {
+          switch (snapshot.connectionState) {
+            case ConnectionState.none:
+              return const Center(
+                child: Text("wrong"),
+              );
+
+            case ConnectionState.waiting:
+              return Center(
+                child: loadingRow(),
+              );
+
+            case ConnectionState.active:
+              return const Center(child: Text("done"));
+
+            case ConnectionState.done:
+              return ListView.builder(
+                  itemCount: querySnapshot!.docs.length,
+                  itemBuilder: (context, i) {
+                    return QuizPlayTile(
                         model: getQuestionData(querySnapshot!.docs[i]),
-                        index: i,
-                      );
-                    }),
+                        index: i);
+                  });
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
           child: const Center(
@@ -85,9 +101,15 @@ class _TakeQuizState extends State<TakeQuiz> {
           )),
           onPressed: () {
             if (total == 0) {
-              Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => Result(
-                      correct: correct, inCorrect: wrong, total: total)));
+              Navigator.of(context)
+                  .pushAndRemoveUntil(
+                      MaterialPageRoute(
+                          builder: (context) => Result(
+                              correct: correct,
+                              inCorrect: wrong,
+                              total: total)),
+                      (route) => false)
+                  .then((value) {});
             } else {
               showDialog(
                 context: context,
@@ -104,12 +126,13 @@ class _TakeQuizState extends State<TakeQuiz> {
                       ),
                       TextButton(
                         onPressed: () {
-                          Navigator.of(context).pushReplacement(
+                          Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
                                   builder: (context) => Result(
                                       correct: correct,
                                       inCorrect: wrong,
-                                      total: total)));
+                                      total: total)),
+                              (route) => false);
                         },
                         child: const Text('ACCEPT'),
                       ),

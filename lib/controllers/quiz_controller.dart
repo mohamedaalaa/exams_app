@@ -40,7 +40,6 @@ class QuizController extends GetxController {
     try {
       isLoading(true);
       var data = await DataBaseHelper().getQuizQuestions(quizId, context);
-      print(data!.docs.length);
       return data;
     } finally {
       isLoading(false);

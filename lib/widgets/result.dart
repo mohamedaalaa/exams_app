@@ -1,4 +1,4 @@
-import 'package:exams/screens/home_page.dart';
+import 'package:exams/screens/students_quizes.dart';
 import 'package:exams/utils/colors.dart';
 import 'package:exams/utils/comon_widgets.dart';
 import 'package:exams/utils/sizes.dart';
@@ -74,10 +74,12 @@ class Result extends StatelessWidget {
                         appButton(
                             label: "Back to exams",
                             widget: const Text("Back to exams"),
-                            onTap: () => Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        const HomeDashBoard())))
+                            onTap: () => Navigator.of(context)
+                                .pushAndRemoveUntil(
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const StudentsQuiz()),
+                                    (route) => false))
                       ],
                     ),
                   ),
