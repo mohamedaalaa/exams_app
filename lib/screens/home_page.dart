@@ -22,75 +22,74 @@ class _HomeDashBoardState extends State<HomeDashBoard> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Home"),
-        backgroundColor: blueAccentColor,
-        actions: [
-          Obx(
-            () => authController.isLoading.value
-                ? loadingRow()
-                : IconButton(
-                    onPressed: () {
-                      authController.signOut(context).then((value) {
-                        Navigator.of(context).pushReplacement(MaterialPageRoute(
-                            builder: (context) => WelcomePage()));
-                      });
-                    },
-                    icon: const Icon(Icons.logout)),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: StreamBuilder(
-          stream: quizStream,
-          builder: (context, AsyncSnapshot<dynamic> snapshot) {
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                const Center(
-                  child: Text("something went wrong"),
-                );
-                break;
-              case ConnectionState.waiting:
-                Center(
-                  child: loadingRow(),
-                );
-                break;
-
-              case ConnectionState.active:
-                final quizes = snapshot.data.docs;
-                return quizes.isEmpty
-                    ? Center(
-                        child: Image.asset(
-                          "assets/images/empty.png",
-                          fit: BoxFit.cover,
-                        ),
-                      )
-                    : ListView.builder(
-                        itemCount: quizes.length,
-                        itemBuilder: (context, i) {
-                          return QuizBox(
-                            title: quizes[i]["quizTitle"],
-                            desc: quizes[i]["quizDescription"],
-                            quizId: quizes[i]["quizId"],
-                          );
-                        },
-                      );
-              case ConnectionState.done:
-                break;
-            }
-            return Container();
-          },
+        appBar: AppBar(
+          title: const Text("Home"),
+          backgroundColor: blueAccentColor,
+          actions: [
+            Obx(
+              () => authController.isLoading.value
+                  ? loadingRow()
+                  : IconButton(
+                      onPressed: () {
+                        authController.signOut(context).then((value) {
+                          Navigator.of(context).pushReplacement(
+                              MaterialPageRoute(
+                                  builder: (context) => WelcomePage()));
+                        });
+                      },
+                      icon: const Icon(Icons.logout)),
+            )
+          ],
         ),
-      ),
-      floatingActionButton: Obx(() => authController.isTeacher.value
-          ? FloatingActionButton(
-              backgroundColor: blueAccentColor,
-              child: const Center(child: Icon(Icons.add)),
-              onPressed: () {
-                Navigator.of(context).pushReplacement(MaterialPageRoute(
-                    builder: (context) => const CreateQuiz()));
-              })
-          : Container()),
-    );
+        body: SafeArea(
+          child: StreamBuilder(
+            stream: quizStream,
+            builder: (context, AsyncSnapshot<dynamic> snapshot) {
+              switch (snapshot.connectionState) {
+                case ConnectionState.none:
+                  const Center(
+                    child: Text("something went wrong"),
+                  );
+                  break;
+                case ConnectionState.waiting:
+                  Center(
+                    child: loadingRow(),
+                  );
+                  break;
+
+                case ConnectionState.active:
+                  final quizes = snapshot.data.docs;
+                  return quizes.isEmpty
+                      ? Center(
+                          child: Image.asset(
+                            "assets/images/empty.png",
+                            fit: BoxFit.cover,
+                          ),
+                        )
+                      : ListView.builder(
+                          itemCount: quizes.length,
+                          itemBuilder: (context, i) {
+                            return QuizBox(
+                              title: quizes[i]["quizTitle"],
+                              desc: quizes[i]["quizDescription"],
+                              quizId: quizes[i]["quizId"],
+                            );
+                          },
+                        );
+                case ConnectionState.done:
+                  break;
+              }
+              return Container();
+            },
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+            backgroundColor: blueAccentColor,
+            child: const Center(child: Icon(Icons.add)),
+            onPressed: () {
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const CreateQuiz()),
+                  (route) => false);
+            }));
   }
 }

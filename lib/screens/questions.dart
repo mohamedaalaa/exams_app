@@ -1,3 +1,4 @@
+import 'package:exams/screens/home_page.dart';
 import 'package:exams/utils/colors.dart';
 import 'package:exams/utils/comon_widgets.dart';
 import 'package:flutter/material.dart';
@@ -142,7 +143,10 @@ class _AddQuestionState extends State<AddQuestion> {
                                         "exam questions can't be less than 5",
                                         context);
                                   } else {
-                                    Navigator.of(context).pop();
+                                    Navigator.of(context).pushReplacement(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                const HomeDashBoard()));
                                     displayMessage(
                                         "quiz created successfully", context);
                                   }

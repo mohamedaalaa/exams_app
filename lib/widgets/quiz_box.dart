@@ -24,10 +24,12 @@ class QuizBox extends StatelessWidget {
       child: ListTile(
         onTap: () {
           !authController.isTeacher.value
-              ? Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => TakeQuiz(
-                        quizId: quizId,
-                      )))
+              ? Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                      builder: (context) => TakeQuiz(
+                            quizId: quizId,
+                          )),
+                  (route) => false)
               : null;
         },
         leading: CircleAvatar(
